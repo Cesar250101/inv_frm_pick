@@ -40,7 +40,7 @@ class StockPicking(models.Model):
         account_obj = self.env['account.account']
         inv_data = []
         journal = self.env['account.invoice'].with_context(default_type='out_invoice')._default_journal()
-        if not journal: raise exceptions.UserError(_('Please define an accounting sales journal for the company %s (%s).') % (self.company_id.name, self.company_id.id))
+        if not journal: raise exceptions.UserError(('Please define an accounting sales journal for the company %s (%s).') % (self.company_id.name, self.company_id.id))
         if self.picking_type_code != 'incoming' :
             inv_data = {'type': 'out_invoice',
                         'account_id': self.move_line_ids and self.move_line_ids[0].product_id.categ_id.property_account_income_categ_id.id or account_obj.search([('name', '=', 'Incomes')], limit=1).id
