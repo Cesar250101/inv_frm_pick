@@ -81,19 +81,23 @@ class StockPicking(models.Model):
             'date_invoice': str(self.scheduled_date),
             'currency_id': self.company_id.currency_id.id or False,
             'journal_id': journal.id,
-            'company_id': self.company_id.id or False,
-            
-            
-            'invoice_line_ids': [(0, 0, {
-                'product_id': line.product_id.id or False,
-                'name':  line.product_id.name or '',
-                'quantity': line.product_uom_qty or '',
-                'price_unit': 1.0, 
-                'account_id': line.product_id.categ_id.property_account_income_categ_id.id or line.product_id.categ_id.property_account_expense_categ_id.id or account_obj.search([('name', '=', 'Expenses')], limit=1).id or account_obj.search([('name', '=', 'Incomes')], limit=1).id,
-                'journal_id': journal.id,
-            }) for line in self.move_line_ids],
+            'company_id': self.company_id.id or False,                        
+        }
+        for line in self.move_lines:
+            data_line={
+                    'invoice_line_ids': [(0, 0, {
+                    'product_id': line.product_id.id or False,
+                    'name':  line.product_id.name or '',
+                    'quantity': line.product_uom_qty or '',
+                    'price_unit': line.sale_line_id.price_unit, 
+                    'account_id': line.product_id.categ_id.property_account_income_categ_id.id or line.product_id.categ_id.property_account_expense_categ_id.id or account_obj.search([('name', '=', 'Expenses')], limit=1).id or account_obj.search([('name', '=', 'Incomes')], limit=1).id,
+                    'journal_id': journal.id,
+                    'invoice_line_tax_ids': [(6, 0, [x.id for x in line.sale_line_id.tax_id])],
+                })],
+            #for line in self.move_line_ids    
         }
         data.update(inv_data)
+        data.update(data_line)
         data.update(self.env['account.invoice'].default_get(['reference_type']))
         invoice = self.env['account.invoice'].create(data)
         self.invoice_ids = invoice

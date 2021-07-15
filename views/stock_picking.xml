@@ -11,9 +11,9 @@
               <button name="create_invoice" string="Create Invoice" type="object" class="oe_highlight"/>
             </xpath>
             <div class="oe_button_box" name="button_box">
-                <button name="action_view_invoice" type="object" attrs="{'invisible': [('invoice_count', '=', 0)]}" icon="fa-pencil-square-o" >
+                <!--<button name="action_view_invoice" type="object" attrs="{'invisible': [('invoice_count', '=', 0)]}" icon="fa-pencil-square-o" >
                     <field string="Invoices" name="invoice_count"   widget="statinfo" />
-                </button>
+                </button>-->
             </div>
         </field>
     </record>
