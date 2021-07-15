@@ -92,6 +92,7 @@ class StockPicking(models.Model):
                     'price_unit': line.sale_line_id.price_unit, 
                     'account_id': line.product_id.categ_id.property_account_income_categ_id.id or line.product_id.categ_id.property_account_expense_categ_id.id or account_obj.search([('name', '=', 'Expenses')], limit=1).id or account_obj.search([('name', '=', 'Incomes')], limit=1).id,
                     'journal_id': journal.id,
+                    'discount':line.sale_line_id.discount,
                     'invoice_line_tax_ids': [(6, 0, [x.id for x in line.sale_line_id.tax_id])],
                 })],
             #for line in self.move_line_ids    
