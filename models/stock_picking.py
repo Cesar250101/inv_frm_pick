@@ -95,11 +95,24 @@ class StockPicking(models.Model):
                     'discount':line.sale_line_id.discount,
                     'invoice_line_tax_ids': [(6, 0, [x.id for x in line.sale_line_id.tax_id])],
                 })],
-            #for line in self.move_line_ids    
         }
+        
+        if self.reference:
+            referencias=[]
+            for r in self.reference:     
+                referencias.append(
+                            (0, 0, {
+                                "origen": r.origen,
+                                "sii_referencia_TpoDocRef": r.sii_referencia_TpoDocRef.id,
+                                "fecha_documento": r.date,   
+                            }))
+                
+                           
         data.update(inv_data)
         data.update(data_line)
         data.update(self.env['account.invoice'].default_get(['reference_type']))
+        data.update()
+        data['referencias'] = referencias
         invoice = self.env['account.invoice'].create(data)
         self.invoice_ids = invoice
 
@@ -111,6 +124,9 @@ class StockPicking(models.Model):
                          for inl in invoice.invoice_line_ids.filtered(
                              lambda x: x.product_id.id == line.product_id.id)]
                     })
+        
+              
+
 
         if self.purchase_id:
             self.purchase_id.invoice_ids = invoice
